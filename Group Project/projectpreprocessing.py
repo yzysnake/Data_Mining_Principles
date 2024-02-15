@@ -9,7 +9,7 @@ def one_hot_encode(df):
                          'EducationField', 'Attrition', 'Over18', 'OverTime', 'BusinessTravel']
 
     # Initialize the OneHotEncoder
-    encoder = OneHotEncoder(sparse=False, drop='first', dtype=np.integer)
+    encoder = OneHotEncoder(sparse_output=False, drop='first', dtype=np.integer)
 
     # Fit and transform the specified columns
     encoded_data = encoder.fit_transform(df[columns_to_encode])
