@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 
 
 def one_hot_encode(df):
@@ -27,3 +27,9 @@ def one_hot_encode(df):
     df_encoded = pd.concat([df_dropped, encoded_df], axis=1)
 
     return df_encoded
+
+
+def min_max_scale(df):
+    scaler = MinMaxScaler()
+    df_scaled = pd.DataFrame(scaler.fit_transform(df), columns=df.columns, index=df.index)
+    return df_scaled
