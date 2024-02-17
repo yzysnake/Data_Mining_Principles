@@ -9,6 +9,9 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from sklearn.metrics import roc_curve, auc
+from sklearn.model_selection import StratifiedKFold
+from scipy import interp
 
 def one_hot_encode(df):
     # Specify the columns to be one-hot encoded
@@ -98,14 +101,12 @@ def plot_confusion_matrix(y_true, y_pred):
     # Compute confusion matrix
     cm = confusion_matrix(y_true, y_pred)
 
-    # Swap the FP and TN in the confusion matrix to put TP in the top-right
-    cm = cm[:, ::-1]
-    cm = cm[::-1, :]
+    new_cm = [[cm[1, 1], cm[0, 1]], [cm[1, 0], cm[0, 0]]]
 
     # Plot using seaborn
     plt.figure(figsize=(8, 6))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Yes', 'No'], yticklabels=['Yes', 'No'])
-    plt.title('Confusion Matrix')
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
+    sns.heatmap(new_cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Yes', 'No'], yticklabels=['Yes', 'No'])
+    plt.title('Confusion Matrix (Yes Represents Attrition)')
+    plt.ylabel('Predicted label')
+    plt.xlabel('True label')
     plt.show()
