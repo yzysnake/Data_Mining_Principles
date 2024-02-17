@@ -61,10 +61,15 @@ def apply_pca(df, n_components=2):
     return df_pca
 
 
-def plot_learning_curves(model, X, y):
-    train_sizes, train_scores, test_scores = learning_curve(model, X, y, cv=5, n_jobs=-1,
+def plot_learning_curves(model, X, y, cv):
+    train_sizes, train_scores, test_scores = learning_curve(model, X, y, cv=cv, n_jobs=-1,
                                                             train_sizes=np.linspace(.1, 1.0, 10),
-                                                            scoring='accuracy')
+                                                            scoring='recall')
+
+    # Recall measures the proportion of actual positive cases (employees who will leave) that are correctly
+    # identified. High recall is important if the cost of missing an employee who is about to leave is high. For
+    # example, if not identifying employees at risk of leaving means losing valuable talent and incurring significant
+    # rehiring and training costs, you might prioritize recall.
 
     # Calculate mean and standard deviation for training set scores
     train_mean = np.mean(train_scores, axis=1)
@@ -84,7 +89,7 @@ def plot_learning_curves(model, X, y):
 
     # Creating plot
     plt.title("Learning Curve")
-    plt.xlabel("Training Set Size"), plt.ylabel("Accuracy Score"), plt.legend(loc="best")
+    plt.xlabel("Training Set Size"), plt.ylabel("Recall Score"), plt.legend(loc="best")
     plt.tight_layout()
     plt.show()
 
@@ -93,9 +98,13 @@ def plot_confusion_matrix(y_true, y_pred):
     # Compute confusion matrix
     cm = confusion_matrix(y_true, y_pred)
 
+    # Swap the FP and TN in the confusion matrix to put TP in the top-right
+    cm = cm[:, ::-1]
+    cm = cm[::-1, :]
+
     # Plot using seaborn
     plt.figure(figsize=(8, 6))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['No', 'Yes'], yticklabels=['No', 'Yes'])
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Yes', 'No'], yticklabels=['Yes', 'No'])
     plt.title('Confusion Matrix')
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
