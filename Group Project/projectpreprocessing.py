@@ -3,13 +3,14 @@ import pandas as pd
 
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.decomposition import PCA
-from sklearn.model_selection import learning_curve
-from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import learning_curve, train_test_split
+from sklearn.metrics import confusion_matrix, precision_recall_curve, auc
+
 
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from sklearn.metrics import roc_curve, auc
+
 from sklearn.model_selection import StratifiedKFold
 from scipy import interp
 
@@ -110,3 +111,35 @@ def plot_confusion_matrix(y_true, y_pred):
     plt.ylabel('Predicted label')
     plt.xlabel('True label')
     plt.show()
+
+
+def plot_precision_recall_curve(model, X, y):
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=66, stratify=y)
+
+    # Fit the model on the training data
+    model.fit(X_train, y_train)
+
+    # If the model has a method to predict probabilities, use it; otherwise, use decision function
+    if hasattr(model, "predict_proba"):
+        y_scores = model.predict_proba(X_test)[:, 1]
+    else:
+        y_scores = model.decision_function(X_test)
+        # ensure all scores are positive as precision_recall_curve expects positive probabilities
+        y_scores = (y_scores - y_scores.min()) / (y_scores.max() - y_scores.min())
+
+    # Compute precision-recall pairs for different probability thresholds
+    precision, recall, _ = precision_recall_curve(y_test, y_scores)
+    pr_auc = auc(recall, precision)
+
+    # Plot the Precision-Recall curve
+    plt.figure(figsize=(8, 6))
+    plt.plot(recall, precision, label=f'PR Curve (area = {pr_auc:.2f})', lw=2, color='navy')
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+    plt.legend(loc='best')
+    plt.grid(True)
+    plt.show()
+
+
