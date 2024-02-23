@@ -68,12 +68,8 @@ def apply_pca(df, n_components=2):
 def plot_learning_curves(model, X, y, cv):
     train_sizes, train_scores, test_scores = learning_curve(model, X, y, cv=cv, n_jobs=-1,
                                                             train_sizes=np.linspace(.1, 1.0, 10),
-                                                            scoring='recall')
+                                                            scoring='f1')
 
-    # Recall measures the proportion of actual positive cases (employees who will leave) that are correctly
-    # identified. High recall is important if the cost of missing an employee who is about to leave is high. For
-    # example, if not identifying employees at risk of leaving means losing valuable talent and incurring significant
-    # rehiring and training costs, you might prioritize recall.
 
     # Calculate mean and standard deviation for training set scores
     train_mean = np.mean(train_scores, axis=1)
@@ -93,7 +89,7 @@ def plot_learning_curves(model, X, y, cv):
 
     # Creating plot
     plt.title("Learning Curve")
-    plt.xlabel("Training Set Size"), plt.ylabel("Recall Score"), plt.legend(loc="best")
+    plt.xlabel("Training Set Size"), plt.ylabel("F-1 Score"), plt.legend(loc="best")
     plt.tight_layout()
     plt.show()
 
