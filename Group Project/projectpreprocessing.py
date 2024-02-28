@@ -16,7 +16,7 @@ from scipy import interp
 def one_hot_encode(df):
     # Specify the columns to be one-hot encoded
     columns_to_encode = ['Department', 'MaritalStatus', 'Gender', 'JobRole',
-                         'EducationField', 'Attrition', 'Over18', 'OverTime', 'BusinessTravel']
+                         'EducationField', 'Attrition', 'OverTime', 'BusinessTravel']
 
     # Initialize the OneHotEncoder
     encoder = OneHotEncoder(sparse_output=False, drop='first', dtype=np.integer)
